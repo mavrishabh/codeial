@@ -2,7 +2,7 @@ const User = require('../models/user');
 
 module.exports.profile = function(req, res){
     // res.end('<h1> User Profile </h1>');
-    return res.render('home', {
+    return res.render('user_profile', {
         title: "Profile"
     });
 }
@@ -44,5 +44,12 @@ module.exports.create = async function(req, res){
 
 // get the sign in data
 module.exports.createSession = function(req, res){
-    
+    return res.redirect('/');
+}
+
+module.exports.destroySession = function(req, res, next){
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
 }

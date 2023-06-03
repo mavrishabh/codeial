@@ -1,4 +1,5 @@
 const User = require('../models/user');
+// const posts = require('../models/post');
 
 module.exports.profile = function(req, res){
     // res.end('<h1> User Profile </h1>');
@@ -9,6 +10,11 @@ module.exports.profile = function(req, res){
 
 // render the sign out page
 module.exports.signUp = function(req, res){
+    if (req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
+
+
     return res.render('user_sign_up', {
         title: "Codeial | Sign Up"
     })
@@ -16,6 +22,10 @@ module.exports.signUp = function(req, res){
 
 // render the sign in page
 module.exports.signIn = function(req, res){
+    if (req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_in', {
         title: "Codeial | Sign In"
     })
@@ -53,3 +63,23 @@ module.exports.destroySession = function(req, res, next){
         res.redirect('/');
     });
 }
+
+// module.exports.posts = function(req, res){
+//     if(req.isAuthenticated()){
+//         User.findOne({email: req.body.email}).then(user => {
+//             if(user){
+//                 posts.create({
+//                     content: req.body.content,
+//                     user: req.user._id
+//                 });
+//                 return res.redirect('back');
+//             }
+//         }).catch(err => {
+//             console.log('Error while posting your comment');
+//             return;
+//         })
+//     }
+    
+    // console.log('Sign In first to be able to post something');
+    // return res.redirect('/users/sign-in');
+// }

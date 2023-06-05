@@ -1,25 +1,36 @@
 const Post = require('../models/post');
-// const User = require('../models/user');
+const Comment = require('../models/comment');
 
 module.exports.create = function(req, res){
-    if(req.isAuthenticated()){
-        Post.create({
-            content: req.body.content,
-            user: req.user._id
-        }).then(post => {
-            res.redirect('back');
-            return;
-        }).catch(err => {
-            if(err)
-                console.log('Error in creating a post');
-            return;
-        })
-    }
-
-    console.log('Sign In first to be able to post something');
-    return res.redirect('/users/sign-in');
+    Post.create({
+        content: req.body.content,
+        user: req.user.id
+    }).then(post => {
+        res.redirect('/');
+        return;
+    }).catch(err => {
+        if(err)
+            console.log('Error in creating a post');
+        return;
+    });
 }
 
 module.exports.view = function(req, res){
     res.end('<h1> View Posts </h1>');
+}
+
+module.exports.destroy = function(req, res){
+    Post.findById(req.params.id).then(post => {
+        // .id means converting the Object id (_id) into string
+        if(post.user == req.user.id){
+            post.deleteOne();
+            Comment.deleteMany({post: req.params.id}).then(post => {
+                return res.redirect('/');
+            })
+        
+        }
+        else{
+            return res.redirect('/');
+        }
+    })
 }

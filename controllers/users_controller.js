@@ -3,9 +3,24 @@ const User = require('../models/user');
 
 module.exports.profile = function(req, res){
     // res.end('<h1> User Profile </h1>');
-    return res.render('user_profile', {
-        title: "Profile"
-    });
+    User.findById(req.params.id).then(user => {
+        return res.render('user_profile', {
+            title: "Profile",
+            profile_user: user
+        });
+    })
+    
+}
+
+module.exports.update = function(req, res){
+    if(req.user.id == req.params.id){
+        User.findByIdAndUpdate(req.params.id, req.body).then(user => {
+            return res.redirect('back');
+        });
+    }
+    else{
+        return res.status(401).send('Unauthorized');
+    }
 }
 
 // render the sign out page
